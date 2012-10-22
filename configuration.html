@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuration &mdash; Shotgun Events Daemon v0.9 documentation</title>
+    <title>Configuration &mdash; Shotgun Events Daemon 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Shotgun Events Daemon v0.9 documentation" href="index.html" />
+    <link rel="top" title="Shotgun Events Daemon 0.9 documentation" href="index.html" />
     <link rel="next" title="Plugins" href="api.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
@@ -39,7 +42,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Shotgun Events Daemon v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Shotgun Events Daemon 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -192,6 +195,11 @@ logfile. Again, if you don&#8217;t see anything logged to the logfile, check you
 log-related settings in shotgunEventDaemon.conf to ensure that the <tt class="docutils literal"><span class="pre">logging</span></tt>
 value is set to log INFO level messages and your logArgs plugin is also configured
 to show INFO level messages.</p>
+<div class="section" id="a-note-about-logging">
+<h3>A Note About Logging<a class="headerlink" href="#a-note-about-logging" title="Permalink to this headline">¶</a></h3>
+<p>It should be noted that log rotation is a feature of the shotgun daemon. Log are
+rotated at midnight every night and ten daily files are kept per plugin.</p>
+</div>
 </div>
 <div class="section" id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
@@ -503,7 +511,10 @@ alerts sent by the Shotgun event framework.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#testing-the-daemon">Testing the daemon</a></li>
-<li><a class="reference internal" href="#running-the-daemon">Running the daemon</a></li>
+<li><a class="reference internal" href="#running-the-daemon">Running the daemon</a><ul>
+<li><a class="reference internal" href="#a-note-about-logging">A Note About Logging</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#next-steps">Next Steps</a></li>
 <li><a class="reference internal" href="#common-errors">Common Errors</a></li>
 <li><a class="reference internal" href="#list-of-configuration-file-settings">List of Configuration File Settings</a><ul>
@@ -531,7 +542,7 @@ alerts sent by the Shotgun event framework.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -557,12 +568,12 @@ alerts sent by the Shotgun event framework.</p>
         <li class="right" >
           <a href="installation.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">Shotgun Events Daemon v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Shotgun Events Daemon 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Patrick Boucher.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

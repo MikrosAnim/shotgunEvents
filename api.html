@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Plugins &mdash; Shotgun Events Daemon v0.9 documentation</title>
+    <title>Plugins &mdash; Shotgun Events Daemon 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,9 +25,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Shotgun Events Daemon v0.9 documentation" href="index.html" />
+    <link rel="top" title="Shotgun Events Daemon 0.9 documentation" href="index.html" />
     <link rel="next" title="Technical Overview" href="techOverview.html" />
-    <link rel="prev" title="Installation" href="installation.html" /> 
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +40,9 @@
           <a href="techOverview.html" title="Technical Overview"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="installation.html" title="Installation"
+          <a href="configuration.html" title="Configuration"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Shotgun Events Daemon v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Shotgun Events Daemon 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,11 +68,11 @@ following function:</p>
 </div>
 <p>This function will be used to tell the event processing system which functions
 to call to process events.</p>
-<p>This function should take one argument which is a <a class="reference internal" href="installation.html#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> object.</p>
-<p>The <a class="reference internal" href="installation.html#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> has one critically important method:
-<a class="reference internal" href="installation.html#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a>.</p>
+<p>This function should take one argument which is a <a class="reference internal" href="#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> object.</p>
+<p>The <a class="reference internal" href="#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> has one critically important method:
+<a class="reference internal" href="#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a>.</p>
 <p>For each of your functions that should process Shotgun events, call
-<a class="reference internal" href="installation.html#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a> once with the appropriate arguments.</p>
+<a class="reference internal" href="#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a> once with the appropriate arguments.</p>
 <p>You can register as many functions as you wish and not all functions in the file
 need to be registered as event processing callbacks.</p>
 </div>
@@ -82,7 +85,7 @@ information.</li>
 <li>A Python Logger object that should be used for reporting. Error and Critical
 messages will be sent via email to any configured user.</li>
 <li>The Shotgun event to be processed.</li>
-<li>The <em>args</em> value passed in at callback registration time. (See <a class="reference internal" href="installation.html#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a>)</li>
+<li>The <em>args</em> value passed in at callback registration time. (See <a class="reference internal" href="#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">registerCallback()</span></tt></a>)</li>
 </ul>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -125,7 +128,7 @@ event processing entry points in the plugin.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> &#8211; The <a class="reference internal" href="installation.html#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> you will interact with to tell the framework which functions to call.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> &#8211; The <a class="reference internal" href="#Registrar" title="Registrar"><tt class="xref py py-class docutils literal"><span class="pre">Registrar</span></tt></a> you will interact with to tell the framework which functions to call.</td>
 </tr>
 </tbody>
 </table>
@@ -134,7 +137,7 @@ event processing entry points in the plugin.</p>
 </div>
 <div class="section" id="registrar">
 <h3>Registrar<a class="headerlink" href="#registrar" title="Permalink to this headline">¶</a></h3>
-<p>The object passed to the <a class="reference internal" href="installation.html#registerCallbacks" title="registerCallbacks"><tt class="xref py py-func docutils literal"><span class="pre">registerCallbacks()</span></tt></a> function.</p>
+<p>The object passed to the <a class="reference internal" href="#registerCallbacks" title="registerCallbacks"><tt class="xref py py-func docutils literal"><span class="pre">registerCallbacks()</span></tt></a> function.</p>
 <dl class="class">
 <dt id="Registrar">
 <em class="property">class </em><tt class="descname">Registrar</tt><a class="headerlink" href="#Registrar" title="Permalink to this definition">¶</a></dt>
@@ -146,14 +149,14 @@ a plugin.</p>
 <dd><p>Get the python Logger object used to log messages from within the plugin.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">You can access this through the <a class="reference internal" href="installation.html#Registrar.logger" title="Registrar.logger"><tt class="xref py py-attr docutils literal"><span class="pre">logger</span></tt></a> property as well.</p>
+<p class="last">You can access this through the <a class="reference internal" href="#Registrar.logger" title="Registrar.logger"><tt class="xref py py-attr docutils literal"><span class="pre">logger</span></tt></a> property as well.</p>
 </div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="Registrar.logger">
 <tt class="descname">logger</tt><a class="headerlink" href="#Registrar.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>See <a class="reference internal" href="installation.html#Registrar.getLogger" title="Registrar.getLogger"><tt class="xref py py-meth docutils literal"><span class="pre">getLogger()</span></tt></a>.</p>
+<dd><p>See <a class="reference internal" href="#Registrar.getLogger" title="Registrar.getLogger"><tt class="xref py py-meth docutils literal"><span class="pre">getLogger()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -187,10 +190,10 @@ something bad happens in this plugin or any of its callbacks.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sgScriptName</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the script taken from the Shotgun scripts page.</li>
 <li><strong>sgScriptKey</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The application key for the script taken from a Shotgun script page.</li>
-<li><strong>callback</strong> (<em>A function or an object with a __call__ method.</em>) &#8211; A callable function that. See <a class="reference internal" href="installation.html#exampleCallback" title="exampleCallback"><tt class="xref py py-func docutils literal"><span class="pre">exampleCallback()</span></tt></a>.</li>
+<li><strong>callback</strong> (<em>A function or an object with a __call__ method.</em>) &#8211; A callable function that. See <a class="reference internal" href="#exampleCallback" title="exampleCallback"><tt class="xref py py-func docutils literal"><span class="pre">exampleCallback()</span></tt></a>.</li>
 <li><strong>matchEvents</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A filter of events you want to have passed to your callback.</li>
 <li><strong>args</strong> &#8211; Any object you want the framework to pass back into your callback.</li>
 </ul>
@@ -248,7 +251,7 @@ will simply be passed back to your callback without any modification.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The point of the <em>args</em> argument is for you to be able to process
-time consuming stuff in the <a class="reference internal" href="installation.html#registerCallbacks" title="registerCallbacks"><tt class="xref py py-func docutils literal"><span class="pre">registerCallbacks()</span></tt></a> function and
+time consuming stuff in the <a class="reference internal" href="#registerCallbacks" title="registerCallbacks"><tt class="xref py py-func docutils literal"><span class="pre">registerCallbacks()</span></tt></a> function and
 have it passed back to you at event processing time.</p>
 </div>
 <div class="admonition note">
@@ -264,7 +267,7 @@ data.</p>
 </div>
 <div class="section" id="callback">
 <h3>Callback<a class="headerlink" href="#callback" title="Permalink to this headline">¶</a></h3>
-<p>Any plugin entry point registered by <a class="reference internal" href="installation.html#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">Registrar.registerCallback()</span></tt></a> should
+<p>Any plugin entry point registered by <a class="reference internal" href="#Registrar.registerCallback" title="Registrar.registerCallback"><tt class="xref py py-meth docutils literal"><span class="pre">Registrar.registerCallback()</span></tt></a> should
 look like this.</p>
 <dl class="function">
 <dt id="exampleCallback">
@@ -273,7 +276,7 @@ look like this.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sg</strong> &#8211; A Shotgun connection instance.</li>
 <li><strong>logger</strong> &#8211; A Python logging.Logger object preconfigured for you.</li>
 <li><strong>event</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A Shotgun event to process</li>
@@ -320,8 +323,8 @@ as an exercise to the user.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="installation.html"
-                        title="previous chapter">Installation</a></p>
+  <p class="topless"><a href="configuration.html"
+                        title="previous chapter">Configuration</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="techOverview.html"
                         title="next chapter">Technical Overview</a></p>
@@ -333,7 +336,7 @@ as an exercise to the user.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -357,14 +360,14 @@ as an exercise to the user.</p>
           <a href="techOverview.html" title="Technical Overview"
              >next</a> |</li>
         <li class="right" >
-          <a href="installation.html" title="Installation"
+          <a href="configuration.html" title="Configuration"
              >previous</a> |</li>
-        <li><a href="index.html">Shotgun Events Daemon v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Shotgun Events Daemon 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Patrick Boucher.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
