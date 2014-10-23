@@ -5,3 +5,18 @@ This software is provided under the MIT License that can be found in the LICENSE
 file or here: <http://www.opensource.org/licenses/mit-license.php>
 
 For docs please see <http://shotgunsoftware.github.com/shotgunEvents>
+
+Repository organisation
+-----------------------
+
+* Originaly forked from https://github.com/CouchLab/shotgunEvents
+* Add two remotes (in order to track modifications):
+  - git remote add shotgunSoftware git@github.com:shotgunsoftware/shotgunEvents.git
+  - git remote add CouchLab git@github.com:CouchLab/shotgunEvents.git
+* Two branches:
+  - shotgunSoftware_master (track shotgunSoftware/shotgunEvents master)
+  - CouchLab_master (track CouchLab/shotgunEvents master)
+* main mikros branch:
+  - mi_master (shoud be fairly up to date with both shotgunSoftware_master && CouchLab_master)
+
+* Plugins are versionned in sgtkCore repository.
