@@ -46,6 +46,12 @@ try:
 except ImportError:
     import pickle
 
+if sys.platform == 'win32':
+    import win32serviceutil
+    import win32service
+    import win32event
+    import servicemanager
+
 import daemonizer
 import shotgun_api3 as sg
 
@@ -219,7 +225,7 @@ class Config(ConfigParser.ConfigParser):
         return path
 
 
-class Engine(daemonizer.Daemon):
+class Engine(object):
     """
     The engine holds the main loop of event processing.
     """
@@ -265,16 +271,7 @@ class Engine(daemonizer.Daemon):
 
         self.log.setLevel(self.config.getLogLevel())
 
-        super(Engine, self).__init__('shotgunEvent', self.config.getEnginePIDFile())
-
-    def start(self, daemonize=True):
-        if not daemonize:
-            # Setup the stdout logger
-            handler = logging.StreamHandler()
-            handler.setFormatter(logging.Formatter("%(levelname)s:%(name)s:%(message)s"))
-            logging.getLogger().addHandler(handler)
-
-        super(Engine, self).start(daemonize)
+        super(Engine, self).__init__()
 
     def setEmailsOnLogger(self, logger, emails):
         # Configure the logger for email output
@@ -309,7 +306,9 @@ class Engine(daemonizer.Daemon):
             msg = 'Argument emails should be True to use the default addresses, False to not send any emails or a list of recipient addresses. Got %s.'
             raise ValueError(msg % type(emails))
 
-        _addMailHandlerToLogger(logger, (smtpServer, smtpPort), fromAddr, toAddrs, emailSubject, username, password, secure, use_ssl)
+        _addMailHandlerToLogger(
+            logger, (smtpServer, smtpPort), fromAddr, toAddrs, emailSubject, username, password, secure
+        )
 
     def getCollectionForPath( self, path, autoDiscover=True, ensureExists=True ) :
         """
@@ -393,7 +392,8 @@ class Engine(daemonizer.Daemon):
         except KeyboardInterrupt, err:
             self.log.warning('Keyboard interrupt. Cleaning up...')
         except Exception, err:
-            self.log.critical('Crash!!!!! Unexpected error (%s) in main loop.\n\n%s', type(err), traceback.format_exc(err))
+            msg = 'Crash!!!!! Unexpected error (%s) in main loop.\n\n%s'
+            self.log.critical(msg, type(err), traceback.format_exc(err))
 
     def _loadEventIdData(self):
         """
@@ -445,7 +445,7 @@ class Engine(daemonizer.Daemon):
                 order = [{'column':'id', 'direction':'desc'}]
                 try:
                     result = self._sg.find_one("EventLogEntry", filters=[], fields=['id'], order=order)
-                except (sg.ProtocolError, sg.ResponseError, socket.err), err:
+                except (sg.ProtocolError, sg.ResponseError, socket.error), err:
                     conn_attempts = self._checkConnectionAttempts(conn_attempts, str(err))
                 except Exception, err:
                     msg = "Unknown error: %s" % str(err)
@@ -501,7 +501,7 @@ class Engine(daemonizer.Daemon):
 
         self.log.debug('Shuting down event processing loop.')
 
-    def _cleanup(self):
+    def stop(self):
         self._continue = False
 
     def _getNewEvents(self):
@@ -831,13 +831,13 @@ class Plugin(object):
             self._engine.log.critical('Did not find a registerCallbacks function in plugin at %s.', self._path)
             self._active = False
 
-    def registerCallback(self, sgScriptName, sgScriptKey, callback, matchEvents=None, args=None):
+    def registerCallback(self, sgScriptName, sgScriptKey, callback, matchEvents=None, args=None, stopOnError=True):
         """
         Register a callback in the plugin.
         """
         global sg
         sgConnection = sg.Shotgun(self._engine.config.getShotgunURL(), sgScriptName, sgScriptKey)
-        self._callbacks.append(Callback(callback, self, self._engine, sgConnection, matchEvents, args))
+        self._callbacks.append(Callback(callback, self, self._engine, sgConnection, matchEvents, args, stopOnError))
 
     def process(self, event, forceEvent=False ):
         self.logger.debug( "Processing %s", event['id'] )
@@ -961,7 +961,7 @@ class Callback(object):
     A part of a plugin that can be called to process a Shotgun event.
     """
 
-    def __init__(self, callback, plugin, engine, shotgun, matchEvents=None, args=None):
+    def __init__(self, callback, plugin, engine, shotgun, matchEvents=None, args=None, stopOnError=True):
         """
         @param callback: The function to run when a Shotgun event occurs.
         @type callback: A function object.
@@ -990,6 +990,7 @@ class Callback(object):
         self._logger = None
         self._matchEvents = matchEvents
         self._args = args
+        self._stopOnError = stopOnError
         self._active = True
 
         # Find a name for this object
@@ -1052,7 +1053,8 @@ class Callback(object):
 
             msg = 'An error occured processing an event.\n\n%s\n\nLocal variables at outer most frame in plugin:\n\n%s'
             self._logger.critical(msg, traceback.format_exc(), pprint.pformat(stack[1].f_locals))
-            self._active = False
+            if self._stopOnError:
+                self._active = False
 
         return self._active
 
@@ -1170,49 +1172,116 @@ class CustomSMTPHandler(logging.handlers.SMTPHandler):
 
 
 class EventDaemonError(Exception):
+    """
+    Base error for the Shotgun event system.
+    """
     pass
 
 
 class ConfigError(EventDaemonError):
+    """
+    Used when an error is detected in the config file.
+    """
     pass
 
 
+if sys.platform == 'win32':
+    class WindowsService(win32serviceutil.ServiceFramework):
+        """
+        Windows service wrapper
+        """
+        _svc_name_ = "ShotgunEventDaemon"
+        _svc_display_name_ = "Shotgun Event Handler"
+
+        def __init__(self, args):
+            win32serviceutil.ServiceFramework.__init__(self, args)
+            self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+            self._engine = Engine(_getConfigPath())
+
+        def SvcStop(self):
+            """
+            Stop the Windows service.
+            """
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+            win32event.SetEvent(self.hWaitStop)
+            self._engine.stop()
+
+        def SvcDoRun(self):
+            """
+            Start the Windows service.
+            """
+            servicemanager.LogMsg(
+                servicemanager.EVENTLOG_INFORMATION_TYPE,
+                servicemanager.PYS_SERVICE_STARTED,
+                (self._svc_name_, '')
+            )
+            self.main()
+
+        def main(self):
+            """
+            Primary Windows entry point
+            """
+            self._engine.start()
+
+
+class LinuxDaemon(daemonizer.Daemon):
+    """
+    Linux Daemon wrapper or wrapper used for foreground operation on Windows
+    """
+    def __init__(self):
+        self._engine = Engine(_getConfigPath())
+        super(LinuxDaemon, self).__init__('shotgunEvent', self._engine.config.getEnginePIDFile())
+
+    def start(self, daemonize=True):
+        if not daemonize:
+            # Setup the stdout logger
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter("%(levelname)s:%(name)s:%(message)s"))
+            logging.getLogger().addHandler(handler)
+
+        super(LinuxDaemon, self).start(daemonize)
+
+    def _run(self):
+        """
+        Start the engine's main loop
+        """
+        self._engine.start()
+
+    def _cleanup(self):
+        self._engine.stop()
+
+
 def main():
-    if len(sys.argv) == 2:
-        daemon = Engine(_getConfigPath())
-
-        # Find the function to call on the daemon
+    """
+    """
+    action = None
+    if len(sys.argv) > 1:
         action = sys.argv[1]
-		# Special case where we give an integer on the command line
-		# Just treat this event
-        try :
-            eid = int( action )
-        except ValueError : # Not an int
-            func = getattr(daemon, action, None)
 
-            # If no function was found, report error.
-            if action[:1] == '_' or func is None:
-                print "Unknown command: %s" % action
-                return 2
+    if sys.platform == 'win32' and action != 'foreground':
+        win32serviceutil.HandleCommandLine(WindowsService)
+        return 0
 
-            # Call the requested function
+    if action:
+        daemon = LinuxDaemon()
+
+        # Find the function to call on the daemon and call it
+        func = getattr(daemon, action, None)
+        if action[:1] != '_' and func is not None:
             func()
-        else :
-            print "Processing single event %d" % eid
-            daemon._runSingleEvent( eid )
             return 0
-    else:
-        print "usage: %s start|stop|restart|foreground" % sys.argv[0]
-        return 2
 
-    return 0
+        print "Unknown command: %s" % action
+
+    print "usage: %s start|stop|restart|foreground" % sys.argv[0]
+    return 2
 
 
 def _getConfigPath():
     """
     Get the path of the shotgunEventDaemon configuration file.
     """
-    paths = ['/etc']
+    paths = ['/etc', os.path.dirname(__file__)]
 
     # Get the current path of the daemon script
     scriptPath = sys.argv[0]
